@@ -28,15 +28,22 @@ trait Langust
 	}
 	*/
 
+	public function translations()
+	{
+		return $this->hasMany($this->getTranslationModelNameDefault());
+	}
+
+
 	public function save(array $options = [])
 	{
 		foreach ($this->relations as $key => $value) {
 
-			var_dump($value);
+			$value->save();
 		}
 
 		parent::save();
 	}
+
 
 	public function __get($key)
 	{
@@ -52,7 +59,15 @@ trait Langust
 			$relation = $this->hasOne($this->getTranslationModelNameDefault())->whereLang($key);
 			if ($relation->getResults() === null) {
 
-				$relation = $this->hasOne($this->getTranslationModelNameDefault())->whereLang(Config::get('langust.fallback'));
+				$modelName = $this->getTranslationModelNameDefault();
+        		$translation = new $modelName(['name' => '']);
+        		$translation->setAttribute('lang', $key);
+        		$translation->setAttribute($this->getForeignKey(), $this->id);
+        		$translation->save();
+
+        		// TODO setRelation instead of setAttribute($this->getForeignKey(), $this->id);
+
+       			return $this->relations[$key] = $translation;
 			}
 
 			return $this->relations[$key] = $relation->getResults();
