@@ -1,0 +1,21 @@
+{
+    "name": "goodvin/langust",
+    "description": "A Laravel package",
+    "keywords": ["laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Evgeniy Somkin",
+            "email": "esomkin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Goodvin\\Langust\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
