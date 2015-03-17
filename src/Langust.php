@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Lang;
 trait Langust
 {
 
+	// http://stackoverflow.com/questions/21814049/laravel-eloquent-example-insert-data-to-database
+
 	public function translate($lang)
 	{
 		return $this->$lang;	
@@ -21,13 +23,23 @@ trait Langust
 
 	public function save(array $options = [])
 	{
+		if (!empty($options)) {
+
+			$this->fill($options);
+		}
+
+		if (!$this->exists) {
+
+			parent::save($options);
+		}
+
 		foreach ($this->relations as $key => $value) {
 
 			if (!$this->exists) {
 
-				parent::save($options);
 				$value->setAttribute($this->getForeignKey(), $this->id);
 			}
+
 			$value->save();
 		}
 
