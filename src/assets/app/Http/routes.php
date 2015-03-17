@@ -41,13 +41,13 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('articles', function(App\Models\Article $article){
 
-	//$temp = $article->where('url', '=', 'first')->first();
-	//$temp->translate('en')->name 	= 'Test en name';
-	//$temp->translate('en')->title 	= 'Test en title';
-	//$temp->translate('fr')->name 	= 'Test fr name';
-	//$temp->translate('fr')->title 	= 'Test fr title';
-	//$temp->save();
+	$temp = $article->where('url', '=', 'second')->first();
 
+	$temp->translate('fr')->name 	= 'Test fr name';
+	$temp->translate('fr')->title 	= 'Test fr title';
+	$temp->save();
+
+	/*
 	$article::create([
 
 		'url' => 'fourth',
@@ -57,4 +57,17 @@ Route::get('articles', function(App\Models\Article $article){
 			'title' => 'Fourth title en',
 		],
 	]);
+	*/
+
+	/*
+	$temp = $article->where('url', '=', 'first')->first();
+	$temp->save([
+
+		'es' => [
+
+			'name' 	=> 'First name es1',
+			'title' => 'First title es1',
+		],
+	]);
+	*/
 });

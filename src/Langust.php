@@ -88,7 +88,7 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 
 	public function translations()
 	{
-		return $this->hasMany($this->getTranslationModelNameDefault());
+		return $this->hasOne($this->getTranslationModelName());
 	}
 
 
@@ -99,19 +99,7 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 			$this->fill($options);
 		}
 
-		if (!$this->exists) {
-
-			parent::save($options);
-		}
-
 		foreach ($this->relations as $key => $value) {
-
-			if (!$this->exists) {
-
-				$value->setAttribute($this->getForeignKey(), $this->id);
-			}
-
-			var_dump($value);
 
 			$value->save();
 		}
@@ -128,12 +116,15 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 
 				if (!isset($this->relations[$key])) {
 
-					$translation = $this->createNewTranslation($key);	
-					$this->relations[$key] = $translation;
+					$translation = $this->createNewTranslation($key);
 				}
 
-				$translation->fill($value);
+				foreach ($value as $fieldName => $fieldValue) {
 
+					$translation->setAttribute($fieldName, $fieldValue);
+				}
+
+				$this->relations[$key] = $translation;
 				unset($attributes[$key]);
 			}
 		}
@@ -141,20 +132,24 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 		return parent::fill($attributes);
 	}
 
-
 	protected function createNewTranslation($lang)
 	{
-		$modelName 		= $this->getTranslationModelNameDefault();
+		$modelName 		= $this->getTranslationModelName();
         $translation 	= new $modelName();
         $translation->fillable($this->langust);
 
         foreach ($this->langust as $value) {
 
-        	$translation->$value = '';
+        	$translation->setAttribute($value, '');
         }
 
         $translation->setAttribute('lang', $lang);
-        $translation->setAttribute($this->getForeignKey(), $this->id);
+
+        if (!$this->exists) {
+
+        	$this->save();
+        }
+        $this->translations()->save($translation);
 
         return $translation;
 	}
@@ -162,16 +157,14 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 
 	public function __get($key)
 	{
-		// If the relation has been loaded already, return it
 		if (array_key_exists($key, $this->relations)) {
 
 			return $this->relations[$key];
 		}
 
-		// If the model supports the locale, load, cache and return it
 		if (in_array($key, $this->getSupportLocales())) {
 
-			$relation = $this->hasOne($this->getTranslationModelNameDefault())->whereLang($key);
+			$relation = $this->translations()->whereLang($key);
 			if ($relation->getResults() === null) {
 
 				$translation = $this->createNewTranslation($key);
@@ -182,7 +175,6 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 			return $this->relations[$key] = $relation->getResults();
 		}
 
-		// If the attribute is set to be automatically localized
 		if ($this->langust) {
 
 			if (in_array($key, $this->langust)) {
@@ -202,7 +194,7 @@ Anyway, hopefully this post clears up a good amount of what was wrong with your 
 	}
 
 
-    public function getTranslationModelNameDefault()
+    public function getTranslationModelName()
     {
 		$pattern = Config::get('langust.model_pattern');
 
