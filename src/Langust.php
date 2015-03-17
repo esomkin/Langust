@@ -53,7 +53,7 @@ trait Langust
 			}
 		}
 
-		parent::fill($attributes);
+		return parent::fill($attributes);
 	}
 
 
