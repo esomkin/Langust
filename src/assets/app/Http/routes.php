@@ -11,11 +11,50 @@
 |
 */
 
+DB::listen(
+
+	function ($query, $bindings, $time) {
+        
+		$data = compact('bindings', 'time');
+
+		// Format binding data for sql insertion
+        foreach ($bindings as $i => $binding)
+        {   
+            if ($binding instanceof \DateTime)
+            {   
+                $bindings[$i] = $binding->format('\'Y-m-d H:i:s\'');
+            }
+            else if (is_string($binding))
+            {   
+                $bindings[$i] = "'$binding'";
+            }   
+        } 
+
+        $query = str_replace(array('%', '?'), array('%%', '%s'), $query);
+        $query = vsprintf($query, $bindings); 
+
+        Log::info($query, $data);   
+    }
+); 
+
 Route::get('/', 'WelcomeController@index');
 
 Route::get('articles', function(App\Models\Article $article){
 
-	$temp = $article->where('url', '=', 'first')->first();
-	$temp->en->name = 'Test test test';
-	$temp->save();
+	//$temp = $article->where('url', '=', 'first')->first();
+	//$temp->translate('en')->name 	= 'Test en name';
+	//$temp->translate('en')->title 	= 'Test en title';
+	//$temp->translate('fr')->name 	= 'Test fr name';
+	//$temp->translate('fr')->title 	= 'Test fr title';
+	//$temp->save();
+
+	$article::create([
+
+		'url' => 'fourth',
+		'en' => [
+
+			'name' 	=> 'Fourth name en',
+			'title' => 'Fourth title en',
+		],
+	]);
 });

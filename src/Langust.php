@@ -7,26 +7,11 @@ use Illuminate\Support\Facades\Lang;
 trait Langust
 {
 
-
-	/**
-	 * Handle dynamic method calls for locale relations.
-	 *
-	 * @param  string $method
-	 * @param  array  $parameters
-	 *
-	 * @return mixed
-	 */
-	/*
-	public function __call($method, $parameters)
+	public function translate($lang)
 	{
-		// If the model supports the locale, load it
-		if (in_array($method, $this->getSupportLocales())) {
-
-			return $this->hasOne($this->getTranslationModelNameDefault())->whereLang($method);
-		}
-		return parent::__call($method, $parameters);
+		return $this->$lang;	
 	}
-	*/
+
 
 	public function translations()
 	{
@@ -38,10 +23,55 @@ trait Langust
 	{
 		foreach ($this->relations as $key => $value) {
 
+			if (!$this->exists) {
+
+				parent::save($options);
+				$value->setAttribute($this->getForeignKey(), $this->id);
+			}
 			$value->save();
 		}
 
-		parent::save();
+		parent::save($options);
+	}
+
+
+	public function fill(array $attributes)
+	{
+		foreach ($attributes as $key => $value) {
+
+			if (in_array($key, $this->getSupportLocales())) {
+
+				if (!isset($this->relations[$key])) {
+
+					$translation = $this->createNewTranslation($key);	
+					$this->relations[$key] = $translation;
+				}
+
+				$translation->fill($value);
+
+				unset($attributes[$key]);
+			}
+		}
+
+		parent::fill($attributes);
+	}
+
+
+	protected function createNewTranslation($lang)
+	{
+		$modelName 		= $this->getTranslationModelNameDefault();
+        $translation 	= new $modelName();
+        $translation->fillable($this->langust);
+
+        foreach ($this->langust as $value) {
+
+        	$translation->$value = '';
+        }
+
+        $translation->setAttribute('lang', $lang);
+        $translation->setAttribute($this->getForeignKey(), $this->id);
+
+        return $translation;
 	}
 
 
@@ -59,13 +89,7 @@ trait Langust
 			$relation = $this->hasOne($this->getTranslationModelNameDefault())->whereLang($key);
 			if ($relation->getResults() === null) {
 
-				$modelName = $this->getTranslationModelNameDefault();
-        		$translation = new $modelName(['name' => '']);
-        		$translation->setAttribute('lang', $key);
-        		$translation->setAttribute($this->getForeignKey(), $this->id);
-        		$translation->save();
-
-        		// TODO setRelation instead of setAttribute($this->getForeignKey(), $this->id);
+				$translation = $this->createNewTranslation($key);
 
        			return $this->relations[$key] = $translation;
 			}

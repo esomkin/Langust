@@ -30,7 +30,10 @@ class CreateArticleLangsTable extends Migration
                 'article_id',
                 'lang'
             ]);
-            $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+            $table->foreign('article_id')
+                ->references('id')
+                ->on('articles')
+                ->onDelete('cascade');
         });
     }
 
