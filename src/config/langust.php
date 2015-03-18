@@ -39,4 +39,11 @@ return [
     */
     'model_pattern' => 'App\Models\{model}Lang',
 
+    /*
+    |
+    | Locales field name
+    |
+    */ 
+    'locale_field'  => 'lang',   
+
 ];

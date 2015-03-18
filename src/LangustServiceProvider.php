@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Register the Langust package with the Laravel framework
+ */
 class LangustServiceProvider extends ServiceProvider
 {
     /**

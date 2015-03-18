@@ -7,12 +7,24 @@ use Illuminate\Support\Facades\Lang;
 trait Langust 
 {
 
-	public function translations() 
+	/**
+	 * Get the relation with translation model
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	protected function translations() 
 	{
 		return $this->hasOne($this->getTranslationModelName());
 	}
 
 
+	/**
+	 * Check if translation exists in relations array
+	 *
+	 * @param $locale
+	 *
+	 * @return boolean
+	 */
 	public function hasTranslation($locale = null) 
 	{
         $locale = $locale ? : Lang::getLocale();
@@ -26,7 +38,12 @@ trait Langust
     }
 
 
-    public function getTranslationModelName() 
+	/**
+	 * Formate translation model name from pattern
+	 *
+	 * @return string Model name
+	 */
+    protected function getTranslationModelName() 
     {
 		$pattern 	= Config::get('langust.model_pattern');
 		$model 		= get_called_class();
@@ -36,15 +53,69 @@ trait Langust
     }
 
 
+	/**
+	 * Get the langust supported locales
+	 *
+	 * @return array
+	 */
 	protected function getSupportLocales() 
 	{
 		return Config::get('langust.locales');
 	}
 
 
+	/**
+	 * Get the locale field name
+	 *
+	 * @return string
+	 */
+	protected function getLocaleFieldName()
+	{
+		return Config::get('langust.locale_field');
+	}
+
+
+	/**
+	 * Create new empty translation & save it
+	 *
+	 * @param $locale
+	 *
+	 * @return string
+	 */
+	protected function createEmptyTranslation($locale) 
+	{
+		$modelName 		= $this->getTranslationModelName();
+        $translation 	= new $modelName();
+        $translation->fillable($this->langust);
+
+        foreach ($this->langust as $value) {
+
+        	$translation->setAttribute($value, '');
+        }
+
+        $translation->setAttribute($this->getLocaleFieldName(), $locale);
+
+        if (!$this->exists) {
+
+        	$this->save();
+        }
+
+        $this->translations()->save($translation);
+
+        return $translation;
+	}	
+
+
+	/**
+	 * Get a localized attribute
+	 *
+	 * @param string $key The attribute
+	 *
+	 * @return mixed
+	 */
 	public function __get($key) 
 	{
-		if (array_key_exists($key, $this->relations)) {
+		if ($this->hasTranslation($key)) {
 
 			return $this->relations[$key];
 		}
@@ -52,9 +123,10 @@ trait Langust
 		if (in_array($key, $this->getSupportLocales())) {
 
 			$relation = $this->translations()->whereLang($key);
+
 			if ($relation->getResults() === null) {
 
-				$translation = $this->createNewTranslation($key);
+				$translation = $this->createEmptyTranslation($key);
 
        			return $this->relations[$key] = $translation;
 			}
@@ -81,28 +153,22 @@ trait Langust
 	}
 
 
+    /**
+     * Alias for __get()
+     */
 	public function translate($locale) 
 	{
 		return $this->$locale;	
 	}
 
 
-	public function save(array $attributes = []) 
-	{
-		if (!empty($attributes)) {
-
-			$this->fill($attributes);
-		}
-
-		foreach ($this->relations as $value) {
-
-			$value->save();
-		}
-
-		parent::save($attributes);
-	}
-
-
+	/**
+	 * Fill the model with localized attributes
+	 *
+	 * @param array $attributes
+	 *
+	 * @return mixed
+	 */
 	public function fill(array $attributes) 
 	{
 		foreach ($attributes as $key => $value) {
@@ -111,7 +177,7 @@ trait Langust
 
 				if (!isset($this->relations[$key])) {
 
-					$translation = $this->createNewTranslation($key);
+					$translation = $this->createEmptyTranslation($key);
 				}
 
 				foreach ($value as $fieldName => $fieldValue) {
@@ -127,26 +193,27 @@ trait Langust
 		return parent::fill($attributes);
 	}
 
-	protected function createNewTranslation($locale) 
+
+	/**
+	 * Save the model with localized attributes
+	 *
+	 * @param array $attributes
+	 *
+	 * @return mixed
+	 */
+	public function save(array $attributes = []) 
 	{
-		$modelName 		= $this->getTranslationModelName();
-        $translation 	= new $modelName();
-        $translation->fillable($this->langust);
+		if (!empty($attributes)) {
 
-        foreach ($this->langust as $value) {
+			$this->fill($attributes);
+		}
 
-        	$translation->setAttribute($value, '');
-        }
+		foreach ($this->relations as $value) {
 
-        $translation->setAttribute('lang', $locale);
+			$value->save();
+		}
 
-        if (!$this->exists) {
-
-        	$this->save();
-        }
-        $this->translations()->save($translation);
-
-        return $translation;
+		parent::save($attributes);
 	}
 
 }
