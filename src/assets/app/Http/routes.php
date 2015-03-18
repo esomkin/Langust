@@ -41,11 +41,16 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('articles', function(App\Models\Article $article){
 
+	/*
 	$temp = $article->where('url', '=', 'second')->first();
 
 	$temp->translate('fr')->name 	= 'Test fr name';
 	$temp->translate('fr')->title 	= 'Test fr title';
 	$temp->save();
+
+	echo $temp->en->name;
+	echo $temp->name;
+	*/
 
 	/*
 	$article::create([
