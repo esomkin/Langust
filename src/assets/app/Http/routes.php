@@ -42,17 +42,7 @@ Route::get('/', 'WelcomeController@index');
 Route::get('articles', function(App\Models\Article $article){
 
 	/*
-	$temp = $article->where('url', '=', 'second')->first();
-
-	$temp->translate('fr')->name 	= 'Test fr name';
-	$temp->translate('fr')->title 	= 'Test fr title';
-	$temp->save();
-
-	echo $temp->en->name;
-	echo $temp->name;
-	*/
-
-	/*
+	Ready
 	$article::create([
 
 		'url' => 'fourth',
@@ -61,18 +51,60 @@ Route::get('articles', function(App\Models\Article $article){
 			'name' 	=> 'Fourth name en',
 			'title' => 'Fourth title en',
 		],
+		'fr' => [
+
+			'name' 	=> 'Fourth name fr',
+			'title' => 'Fourth title fr',
+		],
+	]);
+	*/
+	
+	/*
+	Ready
+	$fourth = $article->where('url', '=', 'fourth-change')->first();
+
+	echo $fourth->url. '<br/>';
+	echo $fourth->name. '<br/>';
+	echo $fourth->translate('fr')->name. '<br/>';
+	echo $fourth->fr->name. '<br/>';
+
+	$fourth->url = 'fourth-change';
+	$fourth->name = 'Fourth locale not set name';
+	$fourth->fr->name = 'Fourth fr locale set name';
+	$fourth->translate('fr')->title = 'Fourth fr locale set title with translate';
+
+	$fourth->save();
+	*/
+
+	/*
+	Ready
+	$third = $article->where('url', '=', 'third')->first();
+	$third->save([
+
+		'es' => [
+
+			'name' 	=> 'Third name es',
+			'title' => 'Third title es',
+		],
 	]);
 	*/
 
 	/*
-	$temp = $article->where('url', '=', 'first')->first();
-	$temp->save([
+	// Not working! Fix it!
+	$third = $article->where('url', '=', 'third')->first();
+	$third->fill([
 
+		'en' => [
+
+			'name' 	=> 'Third name en',
+			'title' => 'Third title en',
+		],
 		'es' => [
 
-			'name' 	=> 'First name es1',
-			'title' => 'First title es1',
-		],
-	]);
+			'name' 	=> 'Third name es change',
+			'title' => 'Third title es change',
+		],	
+		
+	])->save();
 	*/
 });

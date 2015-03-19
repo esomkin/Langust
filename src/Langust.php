@@ -153,6 +153,21 @@ trait Langust
 	}
 
 
+	public function __set($key, $value)
+	{
+		if ($this->langust) {
+
+			if (in_array($key, $this->langust)) {
+
+				$locale = Lang::getLocale();
+				return $this->$locale->$key = $value;
+			}
+		}
+
+		return parent::__set($key, $value);
+	}
+
+
     /**
      * Alias for __get()
      */
