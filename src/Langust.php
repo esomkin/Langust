@@ -153,6 +153,15 @@ trait Langust
 	}
 
 
+    /**
+     * Alias for __get()
+     */
+	public function translate($locale) 
+	{
+		return $this->$locale;	
+	}
+	
+
 	/**
 	 * Set a localized attribute
 	 *
@@ -176,15 +185,6 @@ trait Langust
 	}
 
 
-    /**
-     * Alias for __get()
-     */
-	public function translate($locale) 
-	{
-		return $this->$locale;	
-	}
-
-
 	/**
 	 * Fill the model with localized attributes
 	 *
@@ -198,20 +198,15 @@ trait Langust
 
 			if (in_array($key, $this->getSupportLocales())) {
 
-				/*
-				if (!isset($this->relations[$key])) {
-
-					$translation = $this->createEmptyTranslation($key);
-				}
-
 				foreach ($value as $fieldName => $fieldValue) {
+				
+					if (in_array($fieldName, $this->langust)) {
 
-					$translation->setAttribute($fieldName, $fieldValue);
+						$this->$key->$fieldName = $fieldValue;
+					}
 				}
 
-				$this->relations[$key] = $translation;
 				unset($attributes[$key]);
-				*/
 			}
 		}
 
