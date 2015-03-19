@@ -89,8 +89,6 @@ Route::get('articles', function(App\Models\Article $article){
 	]);
 	*/
 
-	/*
-	// Not working! Fix it!
 	$third = $article->where('url', '=', 'third')->first();
 	$third->fill([
 
@@ -105,6 +103,6 @@ Route::get('articles', function(App\Models\Article $article){
 			'title' => 'Third title es change',
 		],	
 		
-	])->save();
-	*/
+	]);
+
 });

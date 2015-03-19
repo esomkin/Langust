@@ -153,6 +153,14 @@ trait Langust
 	}
 
 
+	/**
+	 * Set a localized attribute
+	 *
+	 * @param string $key The attribute
+	 * @param string $value The value of attribute
+	 *
+	 * @return mixed
+	 */
 	public function __set($key, $value)
 	{
 		if ($this->langust) {
@@ -190,6 +198,7 @@ trait Langust
 
 			if (in_array($key, $this->getSupportLocales())) {
 
+				/*
 				if (!isset($this->relations[$key])) {
 
 					$translation = $this->createEmptyTranslation($key);
@@ -202,6 +211,7 @@ trait Langust
 
 				$this->relations[$key] = $translation;
 				unset($attributes[$key]);
+				*/
 			}
 		}
 
