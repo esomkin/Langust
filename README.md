@@ -52,7 +52,8 @@ or
 ```php
 $article->save([
 
-	'es' => [
+	'url'	=> 'your-url-change',
+	'es' 	=> [
 
 		'name' 	=> 'Article spain name',
 		'title' => 'Article spain title',
