@@ -27,15 +27,15 @@ trait Langust
 	 */
 	public function hasTranslation($locale = null) 
 	{
-        $locale = $locale ? : Lang::getLocale();
+		$locale = $locale ? : Lang::getLocale();
 
-        if (isset($this->relations[$locale])) {
+		if (isset($this->relations[$locale])) {
 
-        	return true;
-        }
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 
 	/**
@@ -43,14 +43,14 @@ trait Langust
 	 *
 	 * @return string Model name
 	 */
-    protected function getTranslationModelName() 
-    {
+	protected function getTranslationModelName() 
+	{
 		$pattern 	= Config::get('langust.model_pattern');
 		$model 		= get_called_class();
 		$model 		= class_basename($model);
 
 		return str_replace('{model}', $model, $pattern);
-    }
+	}
 
 
 	/**
@@ -85,24 +85,24 @@ trait Langust
 	protected function createEmptyTranslation($locale) 
 	{
 		$modelName 		= $this->getTranslationModelName();
-        $translation 	= new $modelName();
-        $translation->fillable($this->langust);
+		$translation 	= new $modelName();
+		$translation->fillable($this->langust);
 
-        foreach ($this->langust as $value) {
+		foreach ($this->langust as $value) {
 
-        	$translation->setAttribute($value, '');
-        }
+			$translation->setAttribute($value, '');
+		}
 
-        $translation->setAttribute($this->getLocaleFieldName(), $locale);
+		$translation->setAttribute($this->getLocaleFieldName(), $locale);
 
-        if (!$this->exists) {
+		if (!$this->exists) {
 
-        	$this->save();
-        }
+			$this->save();
+		}
 
-        $this->translations()->save($translation);
+		$this->translations()->save($translation);
 
-        return $translation;
+		return $translation;
 	}	
 
 
@@ -128,7 +128,7 @@ trait Langust
 
 				$translation = $this->createEmptyTranslation($key);
 
-       			return $this->relations[$key] = $translation;
+				return $this->relations[$key] = $translation;
 			}
 
 			return $this->relations[$key] = $relation->getResults();
@@ -153,9 +153,9 @@ trait Langust
 	}
 
 
-    /**
-     * Alias for __get()
-     */
+	/**
+	 * Alias for __get()
+	 */
 	public function translate($locale) 
 	{
 		return $this->$locale;	
