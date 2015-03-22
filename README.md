@@ -2,9 +2,9 @@
 
 This is a Laravel package for translatable models.
 
-# Installation in 4 steps
+## Installation in 4 steps
 
-#Step 1: Install package
+###Step 1: Install package
 
 Add the package in your composer.json by executing the command.
 
@@ -17,7 +17,7 @@ Next, add the service provider to ```config/app.php```
 'Goodvin\Langust\LangustServiceProvider',
 ```
 
-#Step 2: Migrations
+###Step 2: Migrations
 
 For example, we need to translate ```Article``` model. It is require an extra ```ArticleLang``` model.
 
@@ -57,7 +57,7 @@ Schema::create('article_langs', function(Blueprint $table){
     });
 ```
 
-#Step 3: Models
+###Step 3: Models
 
 1. The translatable model ```Article``` should use the trait ```Goodvin\Langust\Langust```.
 2. The convention for the translation model is ```ArticleLang```.
@@ -98,7 +98,7 @@ class ArticleLang extends Model
 
 3. It is no need to set fillable fields in translatable model :)
 
-#Step 4: Configuration
+###Step 4: Configuration
 
 Laravel 5.*
 
