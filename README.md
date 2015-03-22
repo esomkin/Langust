@@ -2,7 +2,84 @@
 
 This is a Laravel package for translatable models.
 
-## Installation in 4 steps
+##Demo
+
+Creating new translations
+
+```php
+App\Models\Article::create([
+
+	'url' => 'your-url',
+	'en' => [
+
+		'name' 	=> 'Article english name',
+		'title' => 'Article english title',
+	],
+	'fr' => [
+
+		'name' 	=> 'Article french name',
+		'title' => 'Article french title',
+	],
+]);
+```
+
+Getting translated attributes
+
+```php
+$article = App\Models\Article::where('url', '=', 'your-url')->first();
+
+App::setLocale('en');
+echo $article->name;
+
+echo $article->translate('en')->name;
+echo $article->en->name;
+```
+
+Setting translated attributes
+
+```php
+$article->url 			= 'your-url-change';
+
+$article->name			= 'Article english name change';
+$article->en->name		= 'Article english name change';
+$article->translate('fr')->title= 'Article french title change';
+
+$article->save();
+```
+
+or
+
+```php
+$article->save([
+
+	'es' => [
+
+		'name' 	=> 'Article spain name',
+		'title' => 'Article spain title',
+	],
+]);
+```
+
+or 
+
+```php
+$article->fill([
+
+	'en' => [
+
+		'name' 	=> 'Article english name',
+		'title' => 'Article english title',
+	],
+	'es' => [
+
+		'name' 	=> 'Article spain name',
+		'title' => 'Article spain title',
+	],	
+		
+])->save();
+```
+
+##Installation in 4 steps
 
 ###Step 1: Install package
 
@@ -96,7 +173,7 @@ class ArticleLang extends Model
 }
 ```
 
-3. It is no need to set fillable fields in translatable model :)
+It is no need to set fillable fields in translatable model :)
 
 ###Step 4: Configuration
 
