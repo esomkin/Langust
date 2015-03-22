@@ -21,7 +21,7 @@ Next, add the service provider to ```config/app.php```
 
 For example, we need to translate ```Article``` model. It is require an extra ```ArticleLang``` model.
 
-```
+```php
 Schema::create('articles', function(Blueprint $table){
 
     $table->increments('id');
@@ -30,7 +30,7 @@ Schema::create('articles', function(Blueprint $table){
 });
 ```
 
-```
+```php
 Schema::create('article_langs', function(Blueprint $table){
 
     $table->increments('id');
@@ -62,7 +62,7 @@ Schema::create('article_langs', function(Blueprint $table){
 1. The translatable model ```Article``` should use the trait ```Goodvin\Langust\Langust```.
 2. The convention for the translation model is ```ArticleLang```.
 
-```
+```php
 // /app/Models/Article.php
 <?php namespace App\Models;
 
