@@ -54,7 +54,7 @@ Schema::create('article_langs', function(Blueprint $table){
         ->references('id')
         ->on('articles')
         ->onDelete('cascade');
-    });
+});
 ```
 
 ###Step 3: Models
