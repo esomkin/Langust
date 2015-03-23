@@ -1,6 +1,5 @@
 <?php namespace Goodvin\Langust;
 
-use Illuminate\Support\Facades;
 use Illuminate\Support\ServiceProvider;
 
 /**
